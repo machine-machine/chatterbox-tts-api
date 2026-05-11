@@ -4,7 +4,7 @@ services:
   # Main API Service (always included)
   chatterbox-tts:
     build:
-      context: ..
+      context: .
       dockerfile: docker/Dockerfile.uv.gpu
     container_name: chatterbox-tts-api-uv-gpu
     ports:
