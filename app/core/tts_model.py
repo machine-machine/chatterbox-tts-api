@@ -3,7 +3,7 @@ TTS model initialization and management
 """
 
 import os
-import traceback as _traceback
+import traceback
 import asyncio
 from enum import Enum
 from typing import Optional, Dict, Any
@@ -17,6 +17,7 @@ _model = None
 _device = None
 _initialization_state = "not_started"
 _initialization_error = None
+_initialization_traceback = None
 _initialization_progress = ""
 _is_multilingual = None
 _supported_languages = {}
@@ -31,7 +32,7 @@ class InitializationState(Enum):
 
 async def initialize_model():
     """Initialize the Chatterbox TTS model"""
-    global _model, _device, _initialization_state, _initialization_error, _initialization_progress, _is_multilingual, _supported_languages
+    global _model, _device, _initialization_state, _initialization_error, _initialization_traceback, _initialization_progress, _is_multilingual, _supported_languages
     
     try:
         _initialization_state = InitializationState.INITIALIZING.value
@@ -114,12 +115,13 @@ async def initialize_model():
         return _model
         
     except Exception as e:
+        tb = traceback.format_exc()
         _initialization_state = InitializationState.ERROR.value
         _initialization_error = str(e)
         _initialization_progress = f"Failed: {str(e)}"
+        _initialization_traceback = tb
         print(f"✗ Failed to initialize model: {e}")
-        print("✗ Full traceback:")
-        _traceback.print_exc()
+        print(tb)
         raise e
 
 
@@ -146,6 +148,11 @@ def get_initialization_progress():
 def get_initialization_error():
     """Get the initialization error if any"""
     return _initialization_error
+
+
+def get_initialization_traceback():
+    """Get the full traceback of the initialization error if any"""
+    return _initialization_traceback
 
 
 def is_ready():

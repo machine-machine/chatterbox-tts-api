@@ -17,6 +17,7 @@ class HealthResponse(BaseModel):
     initialization_state: Optional[str] = None
     initialization_progress: Optional[str] = None
     initialization_error: Optional[str] = None
+    initialization_traceback: Optional[str] = None
 
 
 class ModelInfo(BaseModel):

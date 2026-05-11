@@ -8,11 +8,12 @@ from app.models import HealthResponse
 from app.config import Config
 from app.core import get_memory_info, add_route_aliases
 from app.core.tts_model import (
-    get_model, 
-    get_device, 
+    get_model,
+    get_device,
     get_initialization_state,
     get_initialization_progress,
     get_initialization_error,
+    get_initialization_traceback,
     is_ready,
     is_initializing
 )
@@ -35,6 +36,7 @@ async def health_check():
     init_state = get_initialization_state()
     init_progress = get_initialization_progress()
     init_error = get_initialization_error()
+    init_traceback = get_initialization_traceback()
     
     # Determine status based on initialization state
     if init_state == "ready":
@@ -61,7 +63,8 @@ async def health_check():
         memory_info=get_memory_info(),
         initialization_state=init_state,
         initialization_progress=init_progress,
-        initialization_error=init_error
+        initialization_error=init_error,
+        initialization_traceback=init_traceback
     )
 
 
