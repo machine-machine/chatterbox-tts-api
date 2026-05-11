@@ -69,7 +69,7 @@ def resolve_voice_path_and_language(voice_name: Optional[str]) -> tuple[str, str
     Returns:
         Tuple of (path to the voice file, language code)
     """
-    # If no voice specified, use default
+    # If no voice specified, use default (empty string = None = model default voice)
     if not voice_name:
         return Config.VOICE_SAMPLE_PATH, "en"
     
@@ -84,7 +84,7 @@ def resolve_voice_path_and_language(voice_name: Optional[str]) -> tuple[str, str
         if voice_name.lower() in openai_voices:
             print(f"🎵 Using default voice for OpenAI voice '{voice_name}' (no alias mapping)")
             return Config.VOICE_SAMPLE_PATH, "en"
-        
+
         # Voice not found, fall back to default voice and log a warning
         print(f"⚠️ Warning: Voice '{voice_name}' not found in voice library, using default voice")
         return Config.VOICE_SAMPLE_PATH, "en"
@@ -488,7 +488,7 @@ async def generate_speech_streaming(
                     None,
                     lambda: model.generate(
                         text=chunk,
-                        audio_prompt_path=voice_sample_path,
+                        audio_prompt_path=voice_sample_path or None,
                         exaggeration=exaggeration,
                         cfg_weight=cfg_weight,
                         temperature=temperature,
@@ -691,7 +691,7 @@ async def generate_speech_sse(
                     None,
                     lambda: model.generate(
                         text=chunk,
-                        audio_prompt_path=voice_sample_path,
+                        audio_prompt_path=voice_sample_path or None,
                         exaggeration=exaggeration,
                         cfg_weight=cfg_weight,
                         temperature=temperature,

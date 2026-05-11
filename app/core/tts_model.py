@@ -49,9 +49,10 @@ async def initialize_model():
         os.makedirs(Config.MODEL_CACHE_DIR, exist_ok=True)
         
         _initialization_progress = "Checking voice sample..."
-        # Check voice sample exists
-        if not os.path.exists(Config.VOICE_SAMPLE_PATH):
-            raise FileNotFoundError(f"Voice sample not found: {Config.VOICE_SAMPLE_PATH}")
+        # Voice sample is optional — if missing, model uses its internal default voice
+        if Config.VOICE_SAMPLE_PATH and not os.path.exists(Config.VOICE_SAMPLE_PATH):
+            print(f"⚠ Voice sample not found at {Config.VOICE_SAMPLE_PATH!r} — using model default voice")
+            Config.VOICE_SAMPLE_PATH = ""
         
         _initialization_progress = "Configuring device compatibility..."
         # Patch torch.load for CPU compatibility if needed
