@@ -100,6 +100,14 @@ async def initialize_model():
         use_multilingual = Config.USE_MULTILINGUAL_MODEL
         
         _initialization_progress = "Loading TTS model (this may take a while)..."
+        # Surface the real ImportError if perth watermarker didn't load
+        try:
+            from perth.perth_net.perth_net_implicit.perth_watermarker import PerthImplicitWatermarker as _PIW
+            print("✓ Perth PerthImplicitWatermarker available")
+        except Exception as _perth_err:
+            print(f"✗ Perth PerthImplicitWatermarker import failed: {_perth_err}")
+            print(traceback.format_exc())
+
         # Initialize model with run_in_executor for non-blocking
         loop = asyncio.get_event_loop()
         
