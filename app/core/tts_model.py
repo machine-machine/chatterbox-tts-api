@@ -7,6 +7,20 @@ import traceback
 import asyncio
 from enum import Enum
 from typing import Optional, Dict, Any
+
+# resemble-perth watermarker fails to initialize PerthImplicitWatermarker in some GPU
+# environments (class is None after import). Patch it to a no-op before chatterbox loads.
+try:
+    import perth as _perth
+    if getattr(_perth, 'PerthImplicitWatermarker', None) is None:
+        class _NoopWatermarker:
+            def apply_watermark(self, audio, sample_rate=None):
+                return audio
+        _perth.PerthImplicitWatermarker = _NoopWatermarker
+        print("⚠ resemble-perth: PerthImplicitWatermarker unavailable — watermarking disabled")
+except ImportError:
+    pass
+
 from chatterbox.tts import ChatterboxTTS
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
 from app.core.mtl import SUPPORTED_LANGUAGES
